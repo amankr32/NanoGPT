@@ -9,7 +9,6 @@
 
 By prioritizing code transparency and mathematical alignment with the original GPT-2/3 specifications, this repository demonstrates the bridge between the seminal "Attention is All You Need" (Vaswani et al., 2017) paper and modern production-grade LLMs.
 
-
 ---
 
 ## Technical Architecture
