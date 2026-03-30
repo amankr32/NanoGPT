@@ -21,6 +21,7 @@ The core of NanoGPT is a character-level (or sub-word) language model that predi
 * **Weight Tieing**: Optionally shares weights between the embedding and pre-softmax linear layers to reduce parameter count and regularize the model.
 * **GeLU Activation**: Employs the Gaussian Error Linear Unit (GeLU) in the feed-forward blocks for smoother non-linearity compared to standard ReLU.
 
+
 ---
 
 ## Mathematical Foundation
