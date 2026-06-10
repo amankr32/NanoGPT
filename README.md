@@ -1,82 +1,93 @@
-# NanoGPT: A Deep Dive into Generative Pre-training
+# 🤖 NanoGPT — Streamlit App
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/get-started/locally/)
-
-## Executive Summary
-**NanoGPT** is a high-performance, minimalist implementation of a Decoder-only Transformer, modeled after the GPT (Generative Pre-trained Transformer) architecture. This project serves as an architectural exploration into the mechanics of causal self-attention, layer normalization, and the optimization bottlenecks inherent in training large-scale autoregressive models.
-
-By prioritizing code transparency and mathematical alignment with the original GPT-2/3 specifications, this repository demonstrates the bridge between the seminal "Attention is All You Need" (Vaswani et al., 2017) paper and modern production-grade LLMs.
+A beginner-friendly web app that lets you **train a GPT model from scratch** and watch it generate Shakespeare-style text — all in your browser.
 
 ---
 
-## Technical Architecture
-
-The core of NanoGPT is a character-level (or sub-word) language model that predicts the next token in a sequence by modeling the conditional probability distribution $P(x_t \mid x_{t-1}, \dots, x_1)$.
-
-### Key Design Pillars:
-* **Causal Self-Attention**: Implemented with a masked multi-head attention mechanism to ensure that the prediction for position $i$ can only depend on known outputs at positions $j < i$.
-* **Residual Connections & LayerNorm**: Utilizes a **Pre-LN** (Pre-Layer Normalization) architecture to improve training stability and gradient flow in deeper networks.
-* **Weight Tieing**: Optionally shares weights between the embedding and pre-softmax linear layers to reduce parameter count and regularize the model.
-* **GeLU Activation**: Employs the Gaussian Error Linear Unit (GeLU) in the feed-forward blocks for smoother non-linearity compared to standard ReLU.
-
+## 🚀 Live Demo
+Deploy for free on Streamlit Community Cloud (see below).
 
 ---
 
-## Mathematical Foundation
-
-The Scaled Dot-Product Attention at the heart of each head is computed as:
-
-$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}} + M\right)V$$
-
-Where:
-* $Q, K, V$ are the Query, Key, and Value matrices.
-* $d_k$ is the dimensionality of the keys (used as a scaling factor to prevent gradient vanishing in the softmax).
-* $M$ is the **Causal Mask**, where $M_{ij} = -\infty$ for $i < j$, effectively zeroing out future context.
-
----
-
-## Features & Engineering Rigor
-
-* **Efficient Computation**: Optimized using PyTorch's vectorized operations and `torch.compile` to maximize GPU TFLOPS.
-* **Hyperparameter Configurability**: Full control over `n_layer`, `n_head`, `n_embd`, and `dropout` via a clean configuration interface.
-* **Optimization Strategy**: Implements the **AdamW** optimizer with weight decay and a **Cosine Learning Rate Decay** schedule with a linear warmup phase.
-* **Scalability**: Scripts support training on small corpora (e.g., Shakespeare) for proof-of-concept, with the architectural flexibility to scale to larger datasets.
+## 📁 Project Structure
+```
+nanogpt-streamlit/
+├── app.py           ← Main Streamlit app (UI + training loop)
+├── model.py         ← GPT model (Head, MultiHeadAttention, Block, GPTLanguageModel)
+├── train_utils.py   ← Dataset builder, batch sampler, loss estimator
+├── requirements.txt ← Python dependencies
+└── README.md        ← This file
+```
 
 ---
 
-## Getting Started
+## 🖥️ Run Locally
 
-### Prerequisites
-* Python 3.8+
-* PyTorch 2.0+ 
-* NumPy
-
-### Installation
-git clone [https://github.com/AKDev32/NanoGPT.git](https://github.com/AKDev32/NanoGPT.git)
-cd NanoGPT
+```bash
+# 1. Clone / download this folder
+# 2. Install dependencies
 pip install -r requirements.txt
 
----
-
-## Educational Objectives & Research Value
-
-This implementation was strategically developed to explore the following domains of neural architecture and optimization:
-
-1. **The Impact of Sparsity**: Systematically observing how varying **Dropout** levels affect the model's loss curves, particularly when training on smaller datasets (e.g., *TinyShakespeare*), to mitigate over-fitting.
-2. **Inference Dynamics**: Investigating the heuristic relationship between **Temperature** and **Top-K sampling**. This includes analyzing the trade-off between stochastic "creativity" and structural coherence in the resulting autoregressive generation.
-3. **Efficiency Bottlenecks**: Quantifying the computational and memory overhead of the $O(N^2)$ attention mechanism during the forward pass, and assessing the limits of sequence length within standard GPU VRAM constraints.
+# 3. Run the app
+streamlit run app.py
+```
+The app will open at `http://localhost:8501`
 
 ---
 
-## References
+## ☁️ Deploy Free (Recommended)
 
-* **Vaswani, A., et al. (2017).** *Attention is All You Need*. [arXiv:1706.03762](https://arxiv.org/abs/1706.03762).
-* **Radford, A., et al. (2019).** *Language Models are Unsupervised Multitask Learners* (GPT-2). [OpenAI Blog](https://openai.com/research/better-language-models).
-* **Karpathy, A. (2022).** *Let's build GPT: from scratch, in code, spelled out.* [GitHub/Neural Networks: Zero to Hero](https://github.com/karpathy/nn-zero-to-hero).
+### Option 1 — Streamlit Community Cloud ⭐ (easiest, free)
+1. Push this folder to a **GitHub repo**
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Click **New app** → select your repo → set `app.py` as the main file
+4. Click **Deploy** — done! You get a public URL like `https://yourname-nanogpt.streamlit.app`
+
+### Option 2 — Hugging Face Spaces (also free)
+1. Create a Space at [huggingface.co/spaces](https://huggingface.co/spaces)
+2. Choose **Streamlit** as the SDK
+3. Upload all files → it auto-deploys
+
+### Option 3 — Render.com (free tier)
+1. Push to GitHub
+2. Create a new **Web Service** on [render.com](https://render.com)
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `streamlit run app.py --server.port $PORT --server.address 0.0.0.0`
 
 ---
 
-**Author:** [Aman Kumar / AKDev32]  
-**Academic Focus:** Natural Language Processing / Neural Architectures
+## 🎓 How It Works
+
+| Component | What it does |
+|-----------|-------------|
+| `Head` | Single attention head — token learns from past tokens |
+| `MultiHeadAttention` | Multiple heads in parallel for richer patterns |
+| `FeedForward` | Small MLP applied per-token after attention |
+| `Block` | One Transformer block = attention + FFN + residuals |
+| `GPTLanguageModel` | Full model = embeddings + N blocks + output head |
+
+Training uses **AdamW** optimizer and **cross-entropy loss** on next-character prediction.
+
+---
+
+## 🔧 Hyperparameter Guide
+
+| Param | Small (fast) | Balanced | Large (slow) |
+|-------|-------------|----------|-------------|
+| n_embd | 64 | 128 | 256 |
+| n_head | 2 | 4 | 6 |
+| n_layer | 2 | 3 | 6 |
+| Steps | 200 | 500 | 2000 |
+| Context | 32 | 64 | 128 |
+
+Start small to verify it works, then scale up!
+
+---
+
+## 📚 References
+- [Karpathy's nanoGPT](https://github.com/karpathy/nanoGPT)
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
+- [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+
+---
+**Author:** Aman Kumar | Amazon ML Summer School
