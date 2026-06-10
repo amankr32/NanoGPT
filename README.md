@@ -90,4 +90,4 @@ Start small to verify it works, then scale up!
 - [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
 
 ---
-**Author:** Aman Kumar | Amazon ML Summer School
+**Author:** Aman Kumar | IK Gujral Punjab Technical University
